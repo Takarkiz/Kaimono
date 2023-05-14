@@ -10,6 +10,7 @@
 ## アプリの構成
 
 Google が提唱している[アーキテクチャガイド](https://developer.android.com/topic/architecture?hl=ja)にしたがって構成している。
+
 各クラスの関係に関しては以下にまとめる。
 
 TODO("クラス間の関係を記述する")

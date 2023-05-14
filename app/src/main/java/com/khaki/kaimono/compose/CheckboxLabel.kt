@@ -31,7 +31,7 @@ fun CheckboxLabel(
     title: String,
     subTitle: String?,
     isCheck: Boolean,
-    paddingValue: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
+    paddingValue: PaddingValues = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
     onClick: () -> Unit = {},
 ) {
 

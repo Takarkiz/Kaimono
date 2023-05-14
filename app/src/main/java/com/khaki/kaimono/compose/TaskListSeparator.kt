@@ -57,7 +57,7 @@ fun TaskListSeparator(
             )
 
             Text(
-                text = "完了したタスク",
+                text = "完了済み",
                 style = MaterialTheme.typography.bodySmall,
             )
         }

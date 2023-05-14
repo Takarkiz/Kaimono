@@ -14,16 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.screen.TaskListUiState
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.khaki.kaimono.ui.theme.KaimonoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +27,6 @@ fun TaskListContent(
     taskListUiState: TaskListUiState,
 ) {
 
-    val taskList by taskListUiState.tasks.collectAsState(initial = listOf())
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -62,7 +57,7 @@ fun TaskListContent(
                     color = MaterialTheme.colorScheme.surface
                 )
                 .padding(it),
-            tasks = taskList,
+            tasks = taskListUiState.tasks,
         )
     }
 }
@@ -87,10 +82,12 @@ fun PreviewTaskListContent() {
             isDone = false,
         ),
     )
-    val taskListUiState = TaskListUiState(
-        tasks = remember { flowOf(taskList) },
-    )
-    TaskListContent(
-        taskListUiState = taskListUiState,
-    )
+
+    KaimonoTheme {
+        TaskListContent(
+            taskListUiState = TaskListUiState(
+                tasks = taskList,
+            ),
+        )
+    }
 }
