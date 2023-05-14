@@ -1,11 +1,13 @@
 package com.khaki.kaimono.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -14,17 +16,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
+import com.khaki.kaimono.screen.TaskListActions
 import com.khaki.kaimono.screen.TaskListUiState
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListContent(
+fun TaskListScreen(
     taskListUiState: TaskListUiState,
+    dispatch: (TaskListActions) -> Unit = {},
 ) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -42,7 +47,11 @@ fun TaskListContent(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { }) {
+            FloatingActionButton(
+                onClick = {
+                    dispatch(TaskListActions.DidTapOpenDialog)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
@@ -50,15 +59,29 @@ fun TaskListContent(
             }
         },
     ) {
-        CheckList(
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     color = MaterialTheme.colorScheme.surface
+                ),
+        ) {
+
+            CheckList(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                tasks = taskListUiState.tasks,
+            )
+
+            if (taskListUiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
                 )
-                .padding(it),
-            tasks = taskListUiState.tasks,
-        )
+            }
+        }
     }
 }
 
@@ -84,7 +107,7 @@ fun PreviewTaskListContent() {
     )
 
     KaimonoTheme {
-        TaskListContent(
+        TaskListScreen(
             taskListUiState = TaskListUiState(
                 tasks = taskList,
             ),

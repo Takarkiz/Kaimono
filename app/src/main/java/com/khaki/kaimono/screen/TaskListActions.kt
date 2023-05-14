@@ -14,6 +14,10 @@ sealed interface TaskListActions {
         val task: TaskUiModel,
     ) : TaskListActions
 
+    data class DidTapStartEditTask(
+        val id: Int,
+    ) : TaskListActions
+
     data class DidTapEditTask(
         val task: TaskUiModel,
     ) : TaskListActions

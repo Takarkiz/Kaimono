@@ -3,7 +3,9 @@ package com.khaki.kaimono.screen
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.db.Task
 import com.khaki.kaimono.repository.TaskRepository
@@ -25,12 +27,16 @@ import java.time.format.DateTimeFormatter
 private data class TaskListViewModelState(
     val isLoading: Boolean = false,
     val taskList: List<Task> = listOf(),
+    val isOpenBottomSheet: Boolean = false,
+    val editingTask: TaskUiModel? = null,
 ) {
 
     fun toUiState(): TaskListUiState {
         return TaskListUiState(
             isLoading = isLoading,
             tasks = taskList.map { task -> TaskUiModel(task) },
+            isOpenBottomSheet = isOpenBottomSheet,
+            editingTask = editingTask,
         )
     }
 }
@@ -64,9 +70,6 @@ class MainViewModel(
                 .onStart {
                     viewModelState.update { it.copy(isLoading = true) }
                 }
-                .onCompletion {
-                    viewModelState.update { it.copy(isLoading = false) }
-                }
                 .catch { cause: Throwable ->
                     TODO("エラー処理")
                 }
@@ -74,6 +77,7 @@ class MainViewModel(
                     viewModelState.update {
                         it.copy(
                             taskList = tasks,
+                            isLoading = false,
                         )
                     }
                 }.launchIn(viewModelScope)
@@ -97,6 +101,10 @@ class MainViewModel(
                 dispatchAddTask(action.task)
             }
 
+            is TaskListActions.DidTapStartEditTask -> {
+                dispatchStartEdit(action.id)
+            }
+
             is TaskListActions.DidTapEditTask -> {
                 dispatchEditTask(action.task)
             }
@@ -110,7 +118,12 @@ class MainViewModel(
     // Private
 
     private fun dispatchOpenDialog() {
-
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = true,
+                editingTask = null,
+            )
+        }
     }
 
     private fun dispatchSwitchTask(taskId: Int) {
@@ -134,6 +147,16 @@ class MainViewModel(
         viewModelScope.launch {
             repository.insert(
                 newlyTask
+            )
+        }
+    }
+
+    private fun dispatchStartEdit(taskId: Int) {
+        val task = viewModelState.value.taskList.find { it.uid == taskId } ?: return
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = true,
+                editingTask = TaskUiModel(task),
             )
         }
     }
