@@ -1,5 +1,6 @@
 package com.khaki.kaimono.screen
 
+import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -71,7 +72,9 @@ class MainViewModel(
                     viewModelState.update { it.copy(isLoading = true) }
                 }
                 .catch { cause: Throwable ->
-                    TODO("エラー処理")
+                    // エラー処理記述
+                    Log.e("MainViewModel", "タスク取得エラー", cause)
+                    viewModelState.update { it.copy(isLoading = false) }
                 }
                 .onEach { tasks ->
                     viewModelState.update {
@@ -139,9 +142,9 @@ class MainViewModel(
             title = task.title,
             subTitle = task.description ?: "",
             isDone = false,
-            isImportant = false,
-            location = "",
-            dueDate = "",
+            isImportant = null,
+            location = null,
+            dueDate = null,
             createdAt = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
         )
         viewModelScope.launch {
