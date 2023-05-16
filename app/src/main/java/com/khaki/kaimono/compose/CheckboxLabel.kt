@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +62,11 @@ fun CheckboxLabel(
         )
 
         Column(
+            modifier = Modifier
+                .weight(
+                    weight = 1f,
+                    fill = false,
+                ),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
 
@@ -82,6 +91,17 @@ fun CheckboxLabel(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
             }
+        }
+
+        IconButton(
+            onClick = {
+
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = null
+            )
         }
     }
 }
