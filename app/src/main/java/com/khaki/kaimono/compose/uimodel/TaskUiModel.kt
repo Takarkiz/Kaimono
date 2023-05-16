@@ -9,11 +9,14 @@ data class TaskUiModel(
     val isDone: Boolean,
     val location: String? = null,
 ) {
-    constructor(task: Task) : this(
-        id = task.uid,
-        title = task.title,
-        description = task.subTitle,
-        isDone = task.isDone,
-        location = task.location,
-    )
+
+    companion object {
+        fun fromEntity(task: Task) = TaskUiModel(
+            id = task.uid,
+            title = task.title,
+            description = task.subTitle,
+            isDone = task.isDone,
+            location = task.location,
+        )
+    }
 }

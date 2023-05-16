@@ -4,18 +4,22 @@ import com.khaki.kaimono.compose.uimodel.TaskUiModel
 
 sealed interface TaskListActions {
 
-    object DidTapOpenDialog : TaskListActions
+    object DidTapFAB : TaskListActions
+
+    object DismissDialog : TaskListActions
 
     data class DidTapTask(
         val id: Int,
     ) : TaskListActions
 
-    data class DidTapAddTask(
-        val task: TaskUiModel,
-    ) : TaskListActions
+    object DidTapAddTask: TaskListActions
 
     data class DidTapStartEditTask(
         val id: Int,
+    ) : TaskListActions
+
+    data class EditTask(
+        val task: TaskUiModel,
     ) : TaskListActions
 
     data class DidTapEditTask(

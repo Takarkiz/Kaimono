@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -38,7 +39,14 @@ fun TaskListScreen(
 ) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberModalBottomSheetState(
+        confirmValueChange = {
+            if (it == SheetValue.Hidden) {
+                dispatch(TaskListActions.DismissDialog)
+            }
+            true
+        }
+    )
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = bottomSheetState,
     )
@@ -60,6 +68,21 @@ fun TaskListScreen(
         sheetContent = {
             InputTaskForm(
                 editingTask = taskListUiState.editingTask,
+                editingMode = taskListUiState.editingMode,
+                onEditTask = {
+                    dispatch(TaskListActions.EditTask(it))
+                },
+                onConfirm = {
+                    dispatch(TaskListActions.DidTapAddTask)
+                    coroutineScope.launch {
+                        scaffoldState.bottomSheetState.hide()
+                    }
+                },
+                onCancel = {
+                    coroutineScope.launch {
+                        scaffoldState.bottomSheetState.hide()
+                    }
+                },
             )
         },
     ) {
@@ -77,6 +100,9 @@ fun TaskListScreen(
                     .fillMaxSize()
                     .padding(it),
                 tasks = taskListUiState.tasks,
+                onClick = {
+                    dispatch(TaskListActions.DidTapTask(it))
+                },
             )
 
             if (taskListUiState.isLoading) {
@@ -91,7 +117,7 @@ fun TaskListScreen(
                     .padding(24.dp)
                     .align(Alignment.BottomEnd),
                 onClick = {
-                    dispatch(TaskListActions.DidTapOpenDialog)
+                    dispatch(TaskListActions.DidTapFAB)
                     coroutineScope.launch {
                         scaffoldState.bottomSheetState.expand()
                     }

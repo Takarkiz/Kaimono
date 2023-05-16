@@ -11,7 +11,9 @@ class TaskRepository(
     private val db = Room.databaseBuilder(
         context,
         AppDatabase::class.java, "database-name"
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()
     private val taskDao = db.taskDao()
 
     val tasks = taskDao.getAll()

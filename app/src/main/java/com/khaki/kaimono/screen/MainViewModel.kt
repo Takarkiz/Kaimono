@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.db.Task
 import com.khaki.kaimono.repository.TaskRepository
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -30,14 +27,16 @@ private data class TaskListViewModelState(
     val taskList: List<Task> = listOf(),
     val isOpenBottomSheet: Boolean = false,
     val editingTask: TaskUiModel? = null,
+    val editingMode: Boolean = false,
 ) {
 
     fun toUiState(): TaskListUiState {
         return TaskListUiState(
             isLoading = isLoading,
-            tasks = taskList.map { task -> TaskUiModel(task) },
+            tasks = taskList.map { task -> TaskUiModel.fromEntity(task) },
             isOpenBottomSheet = isOpenBottomSheet,
             editingTask = editingTask,
+            editingMode = editingMode,
         )
     }
 }
@@ -92,8 +91,12 @@ class MainViewModel(
      */
     fun dispatch(action: TaskListActions) {
         when (action) {
-            is TaskListActions.DidTapOpenDialog -> {
-                dispatchOpenDialog()
+            is TaskListActions.DidTapFAB -> {
+                dispatchFABAction()
+            }
+
+            is TaskListActions.DismissDialog -> {
+                dispatchCloseDialog()
             }
 
             is TaskListActions.DidTapTask -> {
@@ -101,7 +104,7 @@ class MainViewModel(
             }
 
             is TaskListActions.DidTapAddTask -> {
-                dispatchAddTask(action.task)
+                dispatchAddTask()
             }
 
             is TaskListActions.DidTapStartEditTask -> {
@@ -115,15 +118,33 @@ class MainViewModel(
             is TaskListActions.DidTapDeleteTask -> {
                 dispatchDeleteTask(action.id)
             }
+
+            is TaskListActions.EditTask -> {
+                viewModelState.update {
+                    it.copy(
+                        editingTask = action.task,
+                    )
+                }
+            }
         }
     }
 
     // Private
 
-    private fun dispatchOpenDialog() {
+    private fun dispatchFABAction() {
         viewModelState.update {
             it.copy(
                 isOpenBottomSheet = true,
+                editingTask = null,
+                editingMode = true,
+            )
+        }
+    }
+
+    private fun dispatchCloseDialog() {
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = false,
                 editingTask = null,
             )
         }
@@ -136,7 +157,8 @@ class MainViewModel(
         }
     }
 
-    private fun dispatchAddTask(task: TaskUiModel) {
+    private fun dispatchAddTask() {
+        val task = viewModelState.value.editingTask ?: return
         val newlyTask = Task(
             uid = (0..Int.MAX_VALUE).random(),
             title = task.title,
@@ -159,7 +181,8 @@ class MainViewModel(
         viewModelState.update {
             it.copy(
                 isOpenBottomSheet = true,
-                editingTask = TaskUiModel(task),
+                editingTask = TaskUiModel.fromEntity(task),
+                editingMode = false,
             )
         }
     }

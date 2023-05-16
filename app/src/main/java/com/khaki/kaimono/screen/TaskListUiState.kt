@@ -7,5 +7,6 @@ data class TaskListUiState(
     val isLoading: Boolean = false,
     val isOpenBottomSheet: Boolean = false,
     val editingTask: TaskUiModel? = null,
+    val editingMode: Boolean = false,
 )
 

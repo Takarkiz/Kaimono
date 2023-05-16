@@ -8,10 +8,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,11 +20,15 @@ import com.khaki.kaimono.ui.theme.KaimonoTheme
 fun InputTaskForm(
     modifier: Modifier = Modifier,
     editingTask: TaskUiModel?,
+    editingMode: Boolean,
+    onEditTask: (TaskUiModel) -> Unit = {},
+    onConfirm: () -> Unit = {},
+    onCancel: () -> Unit = {},
 ) {
 
-    var taskName: String by remember {
-        mutableStateOf(editingTask?.title ?: "")
-    }
+//    var taskName: String by remember {
+//        mutableStateOf(editingTask?.title ?: "")
+//    }
 
 //    var locationDropdown: Boolean by remember {
 //        mutableStateOf(false)
@@ -45,7 +45,7 @@ fun InputTaskForm(
         horizontalAlignment = Alignment.Start
     ) {
 
-        val title = if (editingTask == null) "新規作成" else "アイテム編集"
+        val title = if (editingMode) "新規作成" else "アイテム編集"
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -56,7 +56,8 @@ fun InputTaskForm(
         )
 
         OutlinedTextField(
-            value = taskName,
+            value = editingTask?.title ?: "",
+            singleLine = true,
             placeholder = {
                 Text(
                     text = "アイテム名",
@@ -64,12 +65,24 @@ fun InputTaskForm(
                 )
             },
             onValueChange = {
-                taskName = it
+                val currentTask = editingTask ?: TaskUiModel(
+                    id = 0,
+                    title = "",
+                    description = null,
+                    isDone = false,
+                    location = null,
+                )
+                onEditTask(currentTask.copy(title = it))
             }
         )
 
         ConfirmButtons(
             modifier = Modifier.fillMaxWidth(),
+            isEditing = editingMode,
+            onClickConfirm = {
+                onConfirm()
+            },
+            onClickCancel = onCancel,
         )
 
 //        ExposedDropdownMenuBox(
@@ -123,7 +136,9 @@ fun InputTaskForm(
 fun PreviewInputTaskForm_new() {
 
     KaimonoTheme {
-
-        InputTaskForm(editingTask = null)
+        InputTaskForm(
+            editingTask = null,
+            editingMode = false,
+        )
     }
 }
