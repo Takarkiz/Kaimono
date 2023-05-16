@@ -51,7 +51,8 @@ fun InputTaskForm(
             modifier = Modifier.fillMaxWidth(),
             text = title,
             style = MaterialTheme.typography.h6.copy(
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onSurface,
             ),
         )
 
@@ -62,6 +63,7 @@ fun InputTaskForm(
                 Text(
                     text = "アイテム名",
                     style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onSurface,
                 )
             },
             onValueChange = {
@@ -138,6 +140,26 @@ fun PreviewInputTaskForm_new() {
     KaimonoTheme {
         InputTaskForm(
             editingTask = null,
+            editingMode = false,
+        )
+    }
+}
+
+@Preview(
+    name = "アイテム入力フォーム",
+    showBackground = true,
+)
+@Composable
+fun PreviewInputTaskForm_edit() {
+
+    KaimonoTheme {
+        InputTaskForm(
+            editingTask = TaskUiModel(
+                id = 0,
+                title = "ああああああ",
+                description = null,
+                isDone = false,
+            ),
             editingMode = false,
         )
     }

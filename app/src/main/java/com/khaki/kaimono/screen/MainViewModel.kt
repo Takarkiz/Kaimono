@@ -162,7 +162,7 @@ class MainViewModel(
         val newlyTask = Task(
             uid = (0..Int.MAX_VALUE).random(),
             title = task.title,
-            subTitle = task.description ?: "",
+            subTitle = task.description,
             isDone = false,
             isImportant = null,
             location = null,
@@ -193,7 +193,7 @@ class MainViewModel(
             repository.update(
                 prevTask.copy(
                     title = task.title,
-                    subTitle = task.description ?: "",
+                    subTitle = task.description,
                     isDone = task.isDone,
                 )
             )
