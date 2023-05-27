@@ -22,7 +22,7 @@ fun CheckList(
     onClickDelete: (Int) -> Unit = {},
 ) {
 
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(true) }
 
     LazyColumn(
         modifier = modifier
