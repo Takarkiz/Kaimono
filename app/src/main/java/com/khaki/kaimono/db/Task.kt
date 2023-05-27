@@ -11,7 +11,7 @@ data class Task(
     @ColumnInfo(name = "sub_title") val subTitle: String?,
     @ColumnInfo(name = "is_done") val isDone: Boolean,
     @ColumnInfo(name = "is_important") val isImportant: Boolean?,
-    val location: String?,
+    val locationId: Int?,
     @ColumnInfo(name = "due_date") val dueDate: String?,
     @ColumnInfo(name = "created_at") val createdAt: String,
 )

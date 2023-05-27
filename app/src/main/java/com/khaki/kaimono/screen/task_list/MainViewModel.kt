@@ -1,4 +1,4 @@
-package com.khaki.kaimono.screen
+package com.khaki.kaimono.screen.task_list
 
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -169,7 +169,7 @@ class MainViewModel(
             subTitle = task.description,
             isDone = false,
             isImportant = null,
-            location = null,
+            locationId = null,
             dueDate = null,
             createdAt = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
         )

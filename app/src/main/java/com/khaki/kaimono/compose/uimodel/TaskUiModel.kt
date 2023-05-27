@@ -16,7 +16,7 @@ data class TaskUiModel(
             title = task.title,
             description = task.subTitle,
             isDone = task.isDone,
-            location = task.location,
+            location = task.locationId.toString()
         )
     }
 }

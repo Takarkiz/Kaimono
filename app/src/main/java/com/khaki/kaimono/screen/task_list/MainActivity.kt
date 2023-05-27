@@ -1,4 +1,4 @@
-package com.khaki.kaimono.screen
+package com.khaki.kaimono.screen.task_list
 
 import android.app.Application
 import android.os.Bundle
@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.room.Room
 import com.khaki.kaimono.compose.TaskListScreen
+import com.khaki.kaimono.db.database.AppDatabase
 import com.khaki.kaimono.repository.TaskRepository
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
@@ -31,9 +33,16 @@ class MainActivity : ComponentActivity() {
                     modelClass: Class<T>,
                     extras: CreationExtras
                 ): T {
-                    val application = extras[extraKeyId] ?: error("Application is not set")
+                    // TODO: ActivityはRoomことを知りたくないので、DIで注入できるようにする
+                    val db = Room.databaseBuilder(
+                        this@MainActivity,
+                        AppDatabase::class.java, "database-name"
+                    )
+                        .fallbackToDestructiveMigration()
+                        .build()
+                    val taskDao = db.taskDao()
                     return MainViewModel(
-                        repository = TaskRepository(application),
+                        repository = TaskRepository(taskDao),
                     ) as T
                 }
             }

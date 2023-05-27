@@ -1,20 +1,11 @@
 package com.khaki.kaimono.repository
 
-import android.content.Context
-import androidx.room.Room
 import com.khaki.kaimono.db.Task
-import com.khaki.kaimono.db.database.AppDatabase
+import com.khaki.kaimono.db.dao.TaskDao
 
 class TaskRepository(
-    context: Context
+    private val taskDao: TaskDao
 ) {
-    private val db = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java, "database-name"
-    )
-        .fallbackToDestructiveMigration()
-        .build()
-    private val taskDao = db.taskDao()
 
     val tasks = taskDao.getAll()
 
