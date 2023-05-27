@@ -1,9 +1,9 @@
-package com.khaki.kaimono.repository
+package com.khaki.kaimono.repositoryImpl
 
 import com.khaki.kaimono.db.dao.LocationDao
 import com.khaki.kaimono.db.entity.Location
 
-class LocationRepository(
+class LocationRepositoryImpl(
     private val locationDao: LocationDao,
 ) {
 

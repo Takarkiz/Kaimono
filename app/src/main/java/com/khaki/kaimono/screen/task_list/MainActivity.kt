@@ -14,7 +14,7 @@ import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.room.Room
 import com.khaki.kaimono.compose.TaskListScreen
 import com.khaki.kaimono.db.database.AppDatabase
-import com.khaki.kaimono.repository.TaskRepository
+import com.khaki.kaimono.repositoryImpl.TaskRepositoryImpl
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         .build()
                     val taskDao = db.taskDao()
                     return MainViewModel(
-                        repository = TaskRepository(taskDao),
+                        repository = TaskRepositoryImpl(taskDao),
                     ) as T
                 }
             }

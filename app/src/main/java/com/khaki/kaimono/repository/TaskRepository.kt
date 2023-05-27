@@ -1,32 +1,20 @@
 package com.khaki.kaimono.repository
 
 import com.khaki.kaimono.db.Task
-import com.khaki.kaimono.db.dao.TaskDao
+import kotlinx.coroutines.flow.Flow
 
-class TaskRepository(
-    private val taskDao: TaskDao
-) {
+interface TaskRepository {
 
-    val tasks = taskDao.getAll()
+    val tasks: Flow<List<Task>>
 
-    suspend fun findById(id: Int): Task {
-        return taskDao.loadAllByIds(intArrayOf(id))[0]
-    }
+    suspend fun findById(id: Int): Task
 
-    suspend fun findByTitle(title: String): Task {
-        return taskDao.findByTitle(title)
-    }
+    suspend fun findByTitle(title: String): Task
 
-    suspend fun insert(task: Task) {
-        taskDao.insertAll(task)
-    }
+    suspend fun insert(task: Task)
 
-    suspend fun update(task: Task) {
-        taskDao.update(task)
-    }
+    suspend fun update(task: Task)
 
-    suspend fun delete(task: Task) {
-        taskDao.delete(task)
-    }
+    suspend fun delete(task: Task)
 
 }
