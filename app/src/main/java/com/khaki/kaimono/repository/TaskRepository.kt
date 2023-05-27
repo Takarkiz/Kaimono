@@ -1,20 +1,20 @@
 package com.khaki.kaimono.repository
 
-import com.khaki.kaimono.db.Task
+import com.khaki.kaimono.db.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
 
-    val tasks: Flow<List<Task>>
+    val tasks: Flow<List<TaskEntity>>
 
-    suspend fun findById(id: Int): Task
+    suspend fun findById(id: Int): TaskEntity
 
-    suspend fun findByTitle(title: String): Task
+    suspend fun findByTitle(title: String): TaskEntity
 
-    suspend fun insert(task: Task)
+    suspend fun insert(task: TaskEntity)
 
-    suspend fun update(task: Task)
+    suspend fun update(task: TaskEntity)
 
-    suspend fun delete(task: Task)
+    suspend fun delete(task: TaskEntity)
 
 }

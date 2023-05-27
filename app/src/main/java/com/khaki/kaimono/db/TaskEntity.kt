@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Task(
+data class TaskEntity(
     @PrimaryKey val uid: Int,
     val title: String,
     @ColumnInfo(name = "sub_title") val subTitle: String?,

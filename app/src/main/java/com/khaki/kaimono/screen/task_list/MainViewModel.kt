@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
-import com.khaki.kaimono.db.Task
+import com.khaki.kaimono.db.TaskEntity
 import com.khaki.kaimono.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 
 private data class TaskListViewModelState(
     val isLoading: Boolean = false,
-    val taskList: List<Task> = listOf(),
+    val taskList: List<TaskEntity> = listOf(),
     val isOpenBottomSheet: Boolean = false,
     val editingTask: TaskUiModel? = null,
     val editingMode: Boolean = false,
@@ -163,7 +163,7 @@ class MainViewModel(
 
     private fun dispatchAddTask() {
         val task = viewModelState.value.editingTask ?: return
-        val newlyTask = Task(
+        val newlyTask = TaskEntity(
             uid = (0..Int.MAX_VALUE).random(),
             title = task.title,
             subTitle = task.description,
