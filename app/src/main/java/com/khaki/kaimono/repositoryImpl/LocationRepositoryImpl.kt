@@ -2,26 +2,27 @@ package com.khaki.kaimono.repositoryImpl
 
 import com.khaki.kaimono.db.dao.LocationDao
 import com.khaki.kaimono.db.entity.LocationEntity
+import com.khaki.kaimono.repository.LocationRepository
 
 class LocationRepositoryImpl(
     private val locationDao: LocationDao,
-) {
+) : LocationRepository {
 
-    val locations = locationDao.getAll()
+    override val locations = locationDao.getAll()
 
-    suspend fun findById(id: Int): LocationEntity {
+    override suspend fun findById(id: Int): LocationEntity {
         return locationDao.loadAllByIds(id)
     }
 
-    suspend fun insert(location: LocationEntity) {
+    override suspend fun insert(location: LocationEntity) {
         locationDao.insertAll(location)
     }
 
-    suspend fun update(location: LocationEntity) {
+    override suspend fun update(location: LocationEntity) {
         locationDao.update(location)
     }
 
-    suspend fun delete(locationId: Int) {
+    override suspend fun delete(locationId: Int) {
         locationDao.delete(locationId)
     }
 
