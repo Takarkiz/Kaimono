@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +53,14 @@ fun TaskListScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(taskListUiState.isOpenBottomSheet) {
+        if (taskListUiState.isOpenBottomSheet) {
+            scaffoldState.bottomSheetState.expand()
+        } else {
+            scaffoldState.bottomSheetState.hide()
+        }
+    }
+
     BottomSheetScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         scaffoldState = scaffoldState,
@@ -70,13 +79,10 @@ fun TaskListScreen(
                 editingTask = taskListUiState.editingTask,
                 editingMode = taskListUiState.editingMode,
                 onEditTask = {
-                    dispatch(TaskListActions.EditTask(it))
+                    dispatch(TaskListActions.InputEditingTask(it))
                 },
                 onConfirm = {
-                    dispatch(TaskListActions.DidTapAddTask)
-                    coroutineScope.launch {
-                        scaffoldState.bottomSheetState.hide()
-                    }
+                    dispatch(TaskListActions.DidTapConfirmTask)
                 },
                 onCancel = {
                     coroutineScope.launch {
@@ -103,6 +109,12 @@ fun TaskListScreen(
                 onClick = {
                     dispatch(TaskListActions.DidTapTask(it))
                 },
+                onClickEdit = {
+                    dispatch(TaskListActions.DidTapStartEditTask(it))
+                },
+                onClickDelete = {
+                    dispatch(TaskListActions.DidTapDeleteTask(it))
+                }
             )
 
             if (taskListUiState.isLoading) {
@@ -118,9 +130,6 @@ fun TaskListScreen(
                     .align(Alignment.BottomEnd),
                 onClick = {
                     dispatch(TaskListActions.DidTapFAB)
-                    coroutineScope.launch {
-                        scaffoldState.bottomSheetState.expand()
-                    }
                 }
             ) {
                 Icon(

@@ -3,7 +3,11 @@ package com.khaki.kaimono.compose
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
@@ -14,6 +18,8 @@ fun CheckList(
     modifier: Modifier = Modifier,
     tasks: List<TaskUiModel>,
     onClick: (Int) -> Unit = {},
+    onClickEdit: (Int) -> Unit = {},
+    onClickDelete: (Int) -> Unit = {},
 ) {
 
     var isExpanded by remember { mutableStateOf(false) }
@@ -31,9 +37,16 @@ fun CheckList(
                 title = task.title,
                 subTitle = task.description,
                 isCheck = task.isDone,
-            ) {
-                onClick(task.id)
-            }
+                onClick = {
+                    onClick(task.id)
+                },
+                onClickEditButton = {
+                    onClickEdit(task.id)
+                },
+                onClickDeleteButton = {
+                    onClickDelete(task.id)
+                },
+            )
         }
 
         item {
@@ -53,9 +66,16 @@ fun CheckList(
                     title = task.title,
                     subTitle = task.description,
                     isCheck = task.isDone,
-                ) {
-                    onClick(task.id)
-                }
+                    onClick = {
+                        onClick(task.id)
+                    },
+                    onClickEditButton = {
+                        onClickEdit(task.id)
+                    },
+                    onClickDeleteButton = {
+                        onClickDelete(task.id)
+                    }
+                )
             }
         }
     }

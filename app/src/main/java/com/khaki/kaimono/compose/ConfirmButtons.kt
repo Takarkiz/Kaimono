@@ -33,7 +33,7 @@ fun ConfirmButtons(
 
         Spacer(modifier = Modifier.width(4.dp))
 
-        val confirmText = if (isEditing) "作成" else "更新"
+        val confirmText = if (isEditing) "更新" else "作成"
 
         TextButton(
             onClick = onClickConfirm

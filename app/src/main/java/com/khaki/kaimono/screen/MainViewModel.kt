@@ -103,23 +103,27 @@ class MainViewModel(
                 dispatchSwitchTask(action.id)
             }
 
-            is TaskListActions.DidTapAddTask -> {
-                dispatchAddTask()
+            is TaskListActions.DidTapConfirmTask -> {
+                if (viewModelState.value.editingMode) {
+                    dispatchUpdateTask()
+                } else {
+                    dispatchAddTask()
+                }
             }
 
             is TaskListActions.DidTapStartEditTask -> {
                 dispatchStartEdit(action.id)
             }
 
-            is TaskListActions.DidTapEditTask -> {
-                dispatchEditTask(action.task)
+            is TaskListActions.CancelEditTask -> {
+                dispatchCancelEdit()
             }
 
             is TaskListActions.DidTapDeleteTask -> {
                 dispatchDeleteTask(action.id)
             }
 
-            is TaskListActions.EditTask -> {
+            is TaskListActions.InputEditingTask -> {
                 viewModelState.update {
                     it.copy(
                         editingTask = action.task,
@@ -136,7 +140,7 @@ class MainViewModel(
             it.copy(
                 isOpenBottomSheet = true,
                 editingTask = null,
-                editingMode = true,
+                editingMode = false,
             )
         }
     }
@@ -174,6 +178,13 @@ class MainViewModel(
                 newlyTask
             )
         }
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = false,
+                editingTask = null,
+                editingMode = false,
+            )
+        }
     }
 
     private fun dispatchStartEdit(taskId: Int) {
@@ -182,20 +193,39 @@ class MainViewModel(
             it.copy(
                 isOpenBottomSheet = true,
                 editingTask = TaskUiModel.fromEntity(task),
+                editingMode = true,
+            )
+        }
+    }
+
+    private fun dispatchUpdateTask() {
+        val editedTask = viewModelState.value.editingTask ?: return
+        val prevTask = viewModelState.value.taskList.find { it.uid == editedTask.id } ?: return
+        viewModelScope.launch {
+            repository.update(
+                prevTask.copy(
+                    title = editedTask.title,
+                    subTitle = editedTask.description,
+                    isDone = editedTask.isDone,
+                )
+            )
+        }
+
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = false,
+                editingTask = null,
                 editingMode = false,
             )
         }
     }
 
-    private fun dispatchEditTask(task: TaskUiModel) {
-        val prevTask = viewModelState.value.taskList.find { it.uid == task.id } ?: return
-        viewModelScope.launch {
-            repository.update(
-                prevTask.copy(
-                    title = task.title,
-                    subTitle = task.description,
-                    isDone = task.isDone,
-                )
+    private fun dispatchCancelEdit() {
+        viewModelState.update {
+            it.copy(
+                isOpenBottomSheet = false,
+                editingTask = null,
+                editingMode = false,
             )
         }
     }
