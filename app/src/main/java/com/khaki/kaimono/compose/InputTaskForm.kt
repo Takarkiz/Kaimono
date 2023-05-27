@@ -45,7 +45,7 @@ fun InputTaskForm(
         horizontalAlignment = Alignment.Start
     ) {
 
-        val title = if (editingMode) "新規作成" else "アイテム編集"
+        val title = if (editingMode) "アイテム編集" else "新規作成"
 
         Text(
             modifier = Modifier.fillMaxWidth(),
