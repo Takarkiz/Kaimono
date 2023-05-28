@@ -7,7 +7,7 @@ import com.khaki.kaimono.db.dao.LocationDao
 import com.khaki.kaimono.db.dao.TaskDao
 import com.khaki.kaimono.db.entity.LocationEntity
 
-@Database(entities = [TaskEntity::class, LocationEntity::class], version = 4)
+@Database(entities = [TaskEntity::class, LocationEntity::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
 

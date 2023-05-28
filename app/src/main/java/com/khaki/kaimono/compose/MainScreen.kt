@@ -151,16 +151,19 @@ fun PreviewTaskListContent() {
             id = 1,
             title = "牛乳",
             isDone = false,
+            location = null,
         ),
         TaskUiModel(
             id = 2,
             title = "パン",
             isDone = true,
+            location = null,
         ),
         TaskUiModel(
             id = 3,
             title = "卵",
             isDone = false,
+            location = null,
         ),
     )
 

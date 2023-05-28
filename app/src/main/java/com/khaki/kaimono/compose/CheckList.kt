@@ -95,23 +95,30 @@ fun PreviewCheckList() {
                     title = "title1",
                     description = "description1",
                     isDone = false,
+                    location = TaskUiModel.Location(
+                        id = 0,
+                        name = "location1",
+                    )
                 ),
                 TaskUiModel(
                     id = 2,
                     title = "title2",
                     description = "description2",
                     isDone = true,
+                    location = null
                 ),
                 TaskUiModel(
                     id = 3,
                     title = "title3",
                     isDone = false,
+                    location = null,
                 ),
                 TaskUiModel(
                     id = 4,
                     title = "title4",
                     description = "description4",
                     isDone = true,
+                    location = null,
                 ),
             )
         )

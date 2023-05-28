@@ -33,7 +33,7 @@ private data class TaskListViewModelState(
     fun toUiState(): TaskListUiState {
         return TaskListUiState(
             isLoading = isLoading,
-            tasks = taskList.map { task -> TaskUiModel.fromEntity(task) },
+            tasks = taskList.map { task -> TaskUiModel.of(task, null) },
             isOpenBottomSheet = isOpenBottomSheet,
             editingTask = editingTask,
             editingMode = editingMode,
@@ -65,25 +65,23 @@ class MainViewModel(
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
 
-        viewModelScope.launch {
-            repository.tasks
-                .onStart {
-                    viewModelState.update { it.copy(isLoading = true) }
+        repository.tasks
+            .onStart {
+                viewModelState.update { it.copy(isLoading = true) }
+            }
+            .catch { cause: Throwable ->
+                // エラー処理記述
+                Log.e("MainViewModel", "タスク取得エラー", cause)
+                viewModelState.update { it.copy(isLoading = false) }
+            }
+            .onEach { tasks ->
+                viewModelState.update {
+                    it.copy(
+                        taskList = tasks,
+                        isLoading = false,
+                    )
                 }
-                .catch { cause: Throwable ->
-                    // エラー処理記述
-                    Log.e("MainViewModel", "タスク取得エラー", cause)
-                    viewModelState.update { it.copy(isLoading = false) }
-                }
-                .onEach { tasks ->
-                    viewModelState.update {
-                        it.copy(
-                            taskList = tasks,
-                            isLoading = false,
-                        )
-                    }
-                }.launchIn(viewModelScope)
-        }
+            }.launchIn(viewModelScope)
     }
 
     /**
@@ -192,7 +190,7 @@ class MainViewModel(
         viewModelState.update {
             it.copy(
                 isOpenBottomSheet = true,
-                editingTask = TaskUiModel.fromEntity(task),
+                editingTask = TaskUiModel.of(task, null),
                 editingMode = true,
             )
         }

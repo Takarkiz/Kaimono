@@ -140,7 +140,7 @@ fun PreviewInputTaskForm_new() {
     KaimonoTheme {
         InputTaskForm(
             editingTask = null,
-            editingMode = false,
+            editingMode = true,
         )
     }
 }
@@ -159,6 +159,7 @@ fun PreviewInputTaskForm_edit() {
                 title = "ああああああ",
                 description = null,
                 isDone = false,
+                location = null,
             ),
             editingMode = false,
         )
