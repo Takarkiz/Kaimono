@@ -6,8 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
-import com.khaki.kaimono.db.TaskEntity
-import com.khaki.kaimono.repository.TaskRepository
+import com.khaki.kaimono.screen.task_list.usecase.TaskListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +18,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 private data class TaskListViewModelState(
     val isLoading: Boolean = false,
-    val taskList: List<TaskEntity> = listOf(),
+    val taskList: List<TaskUiModel> = listOf(),
     val isOpenBottomSheet: Boolean = false,
     val editingTask: TaskUiModel? = null,
     val editingMode: Boolean = false,
@@ -33,7 +30,7 @@ private data class TaskListViewModelState(
     fun toUiState(): TaskListUiState {
         return TaskListUiState(
             isLoading = isLoading,
-            tasks = taskList.map { task -> TaskUiModel.of(task, null) },
+            tasks = taskList,
             isOpenBottomSheet = isOpenBottomSheet,
             editingTask = editingTask,
             editingMode = editingMode,
@@ -45,7 +42,7 @@ private data class TaskListViewModelState(
  * MainActivityのViewModel
  */
 class MainViewModel(
-    private val repository: TaskRepository
+    private val useCase: TaskListUseCase,
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val viewModelState = MutableStateFlow(TaskListViewModelState())
@@ -65,7 +62,7 @@ class MainViewModel(
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
 
-        repository.tasks
+        useCase.tasks
             .onStart {
                 viewModelState.update { it.copy(isLoading = true) }
             }
@@ -154,27 +151,14 @@ class MainViewModel(
 
     private fun dispatchSwitchTask(taskId: Int) {
         viewModelScope.launch {
-            val task = repository.findById(taskId)
-            repository.update(task.copy(isDone = !task.isDone))
+            useCase.updateTaskStatus(taskId)
         }
     }
 
     private fun dispatchAddTask() {
         val task = viewModelState.value.editingTask ?: return
-        val newlyTask = TaskEntity(
-            uid = (0..Int.MAX_VALUE).random(),
-            title = task.title,
-            subTitle = task.description,
-            isDone = false,
-            isImportant = null,
-            locationId = null,
-            dueDate = null,
-            createdAt = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
-        )
         viewModelScope.launch {
-            repository.insert(
-                newlyTask
-            )
+            useCase.insertTask(task)
         }
         viewModelState.update {
             it.copy(
@@ -186,11 +170,11 @@ class MainViewModel(
     }
 
     private fun dispatchStartEdit(taskId: Int) {
-        val task = viewModelState.value.taskList.find { it.uid == taskId } ?: return
+        val task = viewModelState.value.taskList.find { it.id == taskId } ?: return
         viewModelState.update {
             it.copy(
                 isOpenBottomSheet = true,
-                editingTask = TaskUiModel.of(task, null),
+                editingTask = task,
                 editingMode = true,
             )
         }
@@ -198,15 +182,8 @@ class MainViewModel(
 
     private fun dispatchUpdateTask() {
         val editedTask = viewModelState.value.editingTask ?: return
-        val prevTask = viewModelState.value.taskList.find { it.uid == editedTask.id } ?: return
         viewModelScope.launch {
-            repository.update(
-                prevTask.copy(
-                    title = editedTask.title,
-                    subTitle = editedTask.description,
-                    isDone = editedTask.isDone,
-                )
-            )
+            useCase.updateTask(editedTask)
         }
 
         viewModelState.update {
@@ -230,8 +207,7 @@ class MainViewModel(
 
     private fun dispatchDeleteTask(taskId: Int) {
         viewModelScope.launch {
-            val task = repository.findById(taskId)
-            repository.delete(task)
+            useCase.deleteTask(taskId)
         }
     }
 

@@ -14,7 +14,9 @@ import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.room.Room
 import com.khaki.kaimono.compose.TaskListScreen
 import com.khaki.kaimono.db.database.AppDatabase
+import com.khaki.kaimono.repositoryImpl.LocationRepositoryImpl
 import com.khaki.kaimono.repositoryImpl.TaskRepositoryImpl
+import com.khaki.kaimono.screen.task_list.usecase.TaskListInteractor
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,9 +42,13 @@ class MainActivity : ComponentActivity() {
                     )
                         .fallbackToDestructiveMigration()
                         .build()
-                    val taskDao = db.taskDao()
+                    val taskRepository = TaskRepositoryImpl(db.taskDao())
+                    val locationRepository = LocationRepositoryImpl(db.locationDao())
                     return MainViewModel(
-                        repository = TaskRepositoryImpl(taskDao),
+                        useCase = TaskListInteractor(
+                            taskRepository = taskRepository,
+                            locationRepository = locationRepository,
+                        ),
                     ) as T
                 }
             }
