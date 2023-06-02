@@ -1,5 +1,6 @@
 package com.khaki.kaimono.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,7 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -16,10 +25,12 @@ import androidx.compose.ui.unit.dp
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTaskForm(
     modifier: Modifier = Modifier,
     editingTask: TaskUiModel?,
+    locationList: List<TaskUiModel.Location>,
     editingMode: Boolean,
     onEditTask: (TaskUiModel) -> Unit = {},
     onConfirm: () -> Unit = {},
@@ -30,10 +41,10 @@ fun InputTaskForm(
 //        mutableStateOf(editingTask?.title ?: "")
 //    }
 
-//    var locationDropdown: Boolean by remember {
-//        mutableStateOf(false)
-//    }
-//
+    var locationDropdown: Boolean by remember {
+        mutableStateOf(false)
+    }
+
 //    var selectedLocation: String? by remember {
 //        mutableStateOf(editingTask?.location)
 //    }
@@ -78,6 +89,59 @@ fun InputTaskForm(
             }
         )
 
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .clickable {
+                    locationDropdown = true
+                },
+            expanded = locationDropdown,
+            onExpandedChange = {
+                locationDropdown = it
+            }
+        ) {
+            OutlinedTextField(
+                modifier = Modifier.menuAnchor(),
+                value = editingTask?.location?.name ?: "未指定",
+                readOnly = true,
+                singleLine = true,
+                onValueChange = {},
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(locationDropdown)
+                },
+//                placeholder = {
+//                    Text(
+//                        text = "場所",
+//                    )
+//                },
+            )
+
+            ExposedDropdownMenu(
+                expanded = locationDropdown,
+                onDismissRequest = {
+                    locationDropdown = false
+                }
+            ) {
+                locationList.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            locationDropdown = false
+                            val currentTask = editingTask ?: TaskUiModel(
+                                id = 0,
+                                title = "",
+                                description = null,
+                                isDone = false,
+                                location = null,
+                            )
+                            onEditTask(currentTask.copy(location = selectionOption))
+                        },
+                        text = {
+                            Text(text = selectionOption.name)
+                        }
+                    )
+                }
+            }
+
+        }
         ConfirmButtons(
             modifier = Modifier.fillMaxWidth(),
             isEditing = editingMode,
@@ -86,46 +150,6 @@ fun InputTaskForm(
             },
             onClickCancel = onCancel,
         )
-
-//        ExposedDropdownMenuBox(
-//            expanded = locationDropdown,
-//            onExpandedChange = {
-//                locationDropdown = it
-//            }
-//        ) {
-//            TextField(
-//                value = selectedLocation ?: "未指定",
-//                readOnly = true,
-//                onValueChange = {
-//                    selectedLocation = it
-//                },
-//                label = {
-//                    Text(
-//                        text = "場所",
-//                        style = MaterialTheme.typography.body1,
-//                    )
-//                },
-//                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-//            )
-//
-//            ExposedDropdownMenu(
-//                expanded = locationDropdown,
-//                onDismissRequest = {
-//                    locationDropdown = false
-//                }
-//            ) {
-//                options.forEach { selectionOption ->
-//                    DropdownMenuItem(
-//                        onClick = {
-//                            selectedOptionText = selectionOption
-//                            expanded = false
-//                        }
-//                    ){
-//                        Text(text = selectionOption)
-//                    }
-//                }
-//            }
-//    }
 
     }
 }
@@ -141,6 +165,11 @@ fun PreviewInputTaskForm_new() {
         InputTaskForm(
             editingTask = null,
             editingMode = true,
+            locationList = listOf(
+                TaskUiModel.Location(0, "家"),
+                TaskUiModel.Location(1, "スーパー"),
+                TaskUiModel.Location(2, "コンビニ"),
+            )
         )
     }
 }
@@ -162,6 +191,11 @@ fun PreviewInputTaskForm_edit() {
                 location = null,
             ),
             editingMode = false,
+            locationList = listOf(
+                TaskUiModel.Location(0, "家"),
+                TaskUiModel.Location(1, "スーパー"),
+                TaskUiModel.Location(2, "コンビニ"),
+            )
         )
     }
 }
