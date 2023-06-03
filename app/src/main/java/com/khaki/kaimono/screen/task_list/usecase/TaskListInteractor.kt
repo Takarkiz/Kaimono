@@ -6,6 +6,7 @@ import com.khaki.kaimono.repository.LocationRepository
 import com.khaki.kaimono.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -22,6 +23,20 @@ class TaskListInteractor(
                         TaskUiModel.of(task, location)
                     }
                 }
+        }
+
+    override val locations: Flow<List<TaskUiModel.Location>>
+        get() {
+            return locationRepository.locations.map { locations ->
+                return@map locations
+                    .sortedBy { it.order }
+                    .map {
+                    TaskUiModel.Location(
+                        id = it.id,
+                        name = it.name,
+                    )
+                }
+            }
         }
 
     override suspend fun updateTaskStatus(taskId: Int) {

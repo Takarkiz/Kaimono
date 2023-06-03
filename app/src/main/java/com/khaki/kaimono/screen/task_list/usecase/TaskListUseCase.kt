@@ -7,6 +7,8 @@ interface TaskListUseCase {
 
     val tasks: Flow<List<TaskUiModel>>
 
+    val locations: Flow<List<TaskUiModel.Location>>
+
     suspend fun updateTaskStatus(taskId: Int)
 
     suspend fun insertTask(task: TaskUiModel)

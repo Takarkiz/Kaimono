@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 private data class TaskListViewModelState(
     val isLoading: Boolean = false,
     val taskList: List<TaskUiModel> = listOf(),
+    val locations: List<TaskUiModel.Location> = listOf(),
     val isOpenBottomSheet: Boolean = false,
     val editingTask: TaskUiModel? = null,
     val editingMode: Boolean = false,
@@ -31,6 +32,7 @@ private data class TaskListViewModelState(
         return TaskListUiState(
             isLoading = isLoading,
             tasks = taskList,
+            locations = locations,
             isOpenBottomSheet = isOpenBottomSheet,
             editingTask = editingTask,
             editingMode = editingMode,
@@ -79,6 +81,16 @@ class MainViewModel(
                     )
                 }
             }.launchIn(viewModelScope)
+
+        useCase.locations
+            .onEach { locations ->
+                viewModelState.update {
+                    it.copy(
+                        locations = locations,
+                    )
+                }
+            }.launchIn(viewModelScope)
+
     }
 
     /**

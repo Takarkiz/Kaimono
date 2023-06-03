@@ -78,11 +78,7 @@ fun TaskListScreen(
             InputTaskForm(
                 editingTask = taskListUiState.editingTask,
                 editingMode = taskListUiState.editingMode,
-                locationList = listOf(
-                    TaskUiModel.Location(0, "家"),
-                    TaskUiModel.Location(1, "スーパー"),
-                    TaskUiModel.Location(2, "コンビニ"),
-                ),
+                locationList = taskListUiState.locations,
                 onEditTask = {
                     dispatch(TaskListActions.InputEditingTask(it))
                 },
