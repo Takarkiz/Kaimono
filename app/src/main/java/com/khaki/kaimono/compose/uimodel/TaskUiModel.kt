@@ -32,5 +32,15 @@ data class TaskUiModel(
                 }
             )
         }
+
+        fun empty(): TaskUiModel {
+            return TaskUiModel(
+                id = 0,
+                title = "",
+                description = null,
+                isDone = false,
+                location = null,
+            )
+        }
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTaskForm(
     modifier: Modifier = Modifier,
@@ -77,13 +75,7 @@ fun InputTaskForm(
                     )
                 },
                 onValueChange = {
-                    val currentTask = editingTask ?: TaskUiModel(
-                        id = 0,
-                        title = "",
-                        description = null,
-                        isDone = false,
-                        location = null,
-                    )
+                    val currentTask = editingTask ?: TaskUiModel.empty()
                     onEditTask(currentTask.copy(title = it))
                 }
             )
@@ -109,13 +101,7 @@ fun InputTaskForm(
                     locationDropdown = it
                 },
                 onSelectMenu = {
-                    val currentTask = editingTask ?: TaskUiModel(
-                        id = 0,
-                        title = "",
-                        description = null,
-                        isDone = false,
-                        location = null,
-                    )
+                    val currentTask = editingTask ?: TaskUiModel.empty()
                     onEditTask(currentTask.copy(location = it))
                 },
             )
@@ -163,7 +149,7 @@ fun PreviewInputTaskForm_edit() {
                 title = "ああああああ",
                 description = null,
                 isDone = false,
-                location = null,
+                location = TaskUiModel.Location(1, "スーパー"),
             ),
             editingMode = false,
             locationList = listOf(
