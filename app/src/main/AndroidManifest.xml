@@ -12,7 +12,10 @@
         android:theme="@style/Theme.Kaimono"
         tools:targetApi="31">
         <activity
-            android:name=".screen.MainActivity"
+            android:name=".screen.locations.LocationsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".screen.task_list.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Kaimono">

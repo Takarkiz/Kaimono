@@ -1,41 +1,20 @@
 package com.khaki.kaimono.repository
 
-import android.content.Context
-import androidx.room.Room
-import com.khaki.kaimono.db.Task
-import com.khaki.kaimono.db.database.AppDatabase
+import com.khaki.kaimono.db.TaskEntity
+import kotlinx.coroutines.flow.Flow
 
-class TaskRepository(
-    context: Context
-) {
-    private val db = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java, "database-name"
-    )
-        .fallbackToDestructiveMigration()
-        .build()
-    private val taskDao = db.taskDao()
+interface TaskRepository {
 
-    val tasks = taskDao.getAll()
+    val tasks: Flow<List<TaskEntity>>
 
-    suspend fun findById(id: Int): Task {
-        return taskDao.loadAllByIds(intArrayOf(id))[0]
-    }
+    suspend fun findById(id: Int): TaskEntity
 
-    suspend fun findByTitle(title: String): Task {
-        return taskDao.findByTitle(title)
-    }
+    suspend fun findByTitle(title: String): TaskEntity
 
-    suspend fun insert(task: Task) {
-        taskDao.insertAll(task)
-    }
+    suspend fun insert(task: TaskEntity)
 
-    suspend fun update(task: Task) {
-        taskDao.update(task)
-    }
+    suspend fun update(task: TaskEntity)
 
-    suspend fun delete(task: Task) {
-        taskDao.delete(task)
-    }
+    suspend fun delete(task: TaskEntity)
 
 }

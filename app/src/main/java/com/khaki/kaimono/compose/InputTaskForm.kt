@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -16,27 +21,21 @@ import androidx.compose.ui.unit.dp
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTaskForm(
     modifier: Modifier = Modifier,
     editingTask: TaskUiModel?,
+    locationList: List<TaskUiModel.Location>,
     editingMode: Boolean,
     onEditTask: (TaskUiModel) -> Unit = {},
     onConfirm: () -> Unit = {},
     onCancel: () -> Unit = {},
 ) {
 
-//    var taskName: String by remember {
-//        mutableStateOf(editingTask?.title ?: "")
-//    }
-
-//    var locationDropdown: Boolean by remember {
-//        mutableStateOf(false)
-//    }
-//
-//    var selectedLocation: String? by remember {
-//        mutableStateOf(editingTask?.location)
-//    }
+    var locationDropdown: Boolean by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = modifier
@@ -56,27 +55,71 @@ fun InputTaskForm(
             ),
         )
 
-        OutlinedTextField(
-            value = editingTask?.title ?: "",
-            singleLine = true,
-            placeholder = {
-                Text(
-                    text = "アイテム名",
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.onSurface,
-                )
-            },
-            onValueChange = {
-                val currentTask = editingTask ?: TaskUiModel(
-                    id = 0,
-                    title = "",
-                    description = null,
-                    isDone = false,
-                    location = null,
-                )
-                onEditTask(currentTask.copy(title = it))
-            }
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "アイテム名",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onSurface,
+            )
+
+            OutlinedTextField(
+                value = editingTask?.title ?: "",
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = "アイテム名",
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onSurface,
+                    )
+                },
+                onValueChange = {
+                    val currentTask = editingTask ?: TaskUiModel(
+                        id = 0,
+                        title = "",
+                        description = null,
+                        isDone = false,
+                        location = null,
+                    )
+                    onEditTask(currentTask.copy(title = it))
+                }
+            )
+        }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "場所名",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onSurface,
+            )
+
+
+            DropdownMenuBox(
+                expanded = locationDropdown,
+                location = editingTask?.location,
+                menus = locationList,
+                onExpandMenu = {
+                    locationDropdown = it
+                },
+                onSelectMenu = {
+                    val currentTask = editingTask ?: TaskUiModel(
+                        id = 0,
+                        title = "",
+                        description = null,
+                        isDone = false,
+                        location = null,
+                    )
+                    onEditTask(currentTask.copy(location = it))
+                },
+            )
+        }
 
         ConfirmButtons(
             modifier = Modifier.fillMaxWidth(),
@@ -86,46 +129,6 @@ fun InputTaskForm(
             },
             onClickCancel = onCancel,
         )
-
-//        ExposedDropdownMenuBox(
-//            expanded = locationDropdown,
-//            onExpandedChange = {
-//                locationDropdown = it
-//            }
-//        ) {
-//            TextField(
-//                value = selectedLocation ?: "未指定",
-//                readOnly = true,
-//                onValueChange = {
-//                    selectedLocation = it
-//                },
-//                label = {
-//                    Text(
-//                        text = "場所",
-//                        style = MaterialTheme.typography.body1,
-//                    )
-//                },
-//                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-//            )
-//
-//            ExposedDropdownMenu(
-//                expanded = locationDropdown,
-//                onDismissRequest = {
-//                    locationDropdown = false
-//                }
-//            ) {
-//                options.forEach { selectionOption ->
-//                    DropdownMenuItem(
-//                        onClick = {
-//                            selectedOptionText = selectionOption
-//                            expanded = false
-//                        }
-//                    ){
-//                        Text(text = selectionOption)
-//                    }
-//                }
-//            }
-//    }
 
     }
 }
@@ -140,7 +143,8 @@ fun PreviewInputTaskForm_new() {
     KaimonoTheme {
         InputTaskForm(
             editingTask = null,
-            editingMode = false,
+            editingMode = true,
+            locationList = listOf(),
         )
     }
 }
@@ -159,8 +163,14 @@ fun PreviewInputTaskForm_edit() {
                 title = "ああああああ",
                 description = null,
                 isDone = false,
+                location = null,
             ),
             editingMode = false,
+            locationList = listOf(
+                TaskUiModel.Location(0, "家"),
+                TaskUiModel.Location(1, "スーパー"),
+                TaskUiModel.Location(2, "コンビニ"),
+            )
         )
     }
 }

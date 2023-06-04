@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,8 +27,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
-import com.khaki.kaimono.screen.TaskListActions
-import com.khaki.kaimono.screen.TaskListUiState
+import com.khaki.kaimono.screen.task_list.TaskListActions
+import com.khaki.kaimono.screen.task_list.TaskListUiState
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 import kotlinx.coroutines.launch
 
@@ -80,6 +78,7 @@ fun TaskListScreen(
             InputTaskForm(
                 editingTask = taskListUiState.editingTask,
                 editingMode = taskListUiState.editingMode,
+                locationList = taskListUiState.locations,
                 onEditTask = {
                     dispatch(TaskListActions.InputEditingTask(it))
                 },
@@ -151,16 +150,19 @@ fun PreviewTaskListContent() {
             id = 1,
             title = "牛乳",
             isDone = false,
+            location = null,
         ),
         TaskUiModel(
             id = 2,
             title = "パン",
             isDone = true,
+            location = null,
         ),
         TaskUiModel(
             id = 3,
             title = "卵",
             isDone = false,
+            location = null,
         ),
     )
 
