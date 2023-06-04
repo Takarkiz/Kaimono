@@ -98,7 +98,7 @@ fun TaskListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = MaterialTheme.colorScheme.surface
+                    color = MaterialTheme.colorScheme.background
                 ),
         ) {
 

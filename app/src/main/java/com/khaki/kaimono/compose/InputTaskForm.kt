@@ -1,12 +1,13 @@
 package com.khaki.kaimono.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +48,9 @@ fun InputTaskForm(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = title,
-            style = MaterialTheme.typography.h6.copy(
+            style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.colorScheme.onSurface,
             ),
         )
 
@@ -60,8 +61,8 @@ fun InputTaskForm(
         ) {
             Text(
                 text = "アイテム名",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             OutlinedTextField(
@@ -70,8 +71,8 @@ fun InputTaskForm(
                 placeholder = {
                     Text(
                         text = "アイテム名",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
                 onValueChange = {
@@ -88,8 +89,8 @@ fun InputTaskForm(
         ) {
             Text(
                 text = "場所名",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
 
