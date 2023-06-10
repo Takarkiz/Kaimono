@@ -1,4 +1,4 @@
-package com.khaki.kaimono.compose
+package com.khaki.kaimono.screen.task_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,9 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.khaki.kaimono.compose.CheckList
+import com.khaki.kaimono.compose.InputTaskForm
 import com.khaki.kaimono.compose.uimodel.TaskUiModel
-import com.khaki.kaimono.screen.task_list.TaskListActions
-import com.khaki.kaimono.screen.task_list.TaskListUiState
 import com.khaki.kaimono.ui.theme.KaimonoTheme
 import kotlinx.coroutines.launch
 

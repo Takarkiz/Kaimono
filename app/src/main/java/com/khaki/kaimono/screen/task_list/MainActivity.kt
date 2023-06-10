@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.room.Room
-import com.khaki.kaimono.compose.TaskListScreen
 import com.khaki.kaimono.db.database.AppDatabase
 import com.khaki.kaimono.repositoryImpl.LocationRepositoryImpl
 import com.khaki.kaimono.repositoryImpl.TaskRepositoryImpl
